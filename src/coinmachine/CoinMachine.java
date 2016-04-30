@@ -1,6 +1,7 @@
 package coinmachine;
 import java.util.Collections;
 import java.util.List;
+import java.util.Observable;
 
 /** 
  *  A coin purse contains coins.
@@ -9,12 +10,12 @@ import java.util.List;
  *  and withdrawing coins.
  *  @author BTS and MRT
  */
-public class CoinMachine {
+public class CoinMachine extends Observable {
 	/** the coins it contains */
 	private List<Coin> coins;
 	/** max number of coins you can put in the machine */
 	private int capacity; 
-	
+
 	/** 
 	 * Create a new coin machine with a fixed capacity.
 	 */
@@ -30,7 +31,7 @@ public class CoinMachine {
 	public int getCount() { 
 		return coins.size();
 	}
-	
+
 	/** 
 	 * Get the value of all the coins in the machine.
 	 *  @return the total value of the coins
@@ -40,7 +41,7 @@ public class CoinMachine {
 		for (Coin c : coins) balance += c.getValue();
 		return balance;
 	}
-	
+
 	/** 
 	 * isFull tests whether the machine is full of coins.
 	 *  @return true if the machine is full to capacity
@@ -59,11 +60,14 @@ public class CoinMachine {
 	public boolean insert( Coin m ) {
 		if ( isFull() ) return false;
 		if (m.getValue() <= 0) throw new IllegalArgumentException("Coin must have positive value");
-		boolean result = coins.add(m);
-		//TODO notify observers
-		return result;
+		{
+			boolean result = coins.add(m);
+			setChanged();
+			this.notifyObservers();
+			return result;
+		}
 	}
-	
+
 	/**
 	 * Short string description of the coin machine.
 	 * @return string description of the coin machine
@@ -78,7 +82,7 @@ public class CoinMachine {
 	public int getCapacity() {
 		return capacity;
 	}
-	
+
 	/** 
 	 * Get a view of the coins, but don't allow the receiver to change the list.
 	 * @return an unmodifiable list of the coins in machine

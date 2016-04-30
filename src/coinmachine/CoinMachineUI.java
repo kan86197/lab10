@@ -1,4 +1,4 @@
-package coinMachineLab;
+package coinmachine;
 
 import java.awt.Container;
 import java.awt.FlowLayout;
